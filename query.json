@@ -1,0 +1,156 @@
+{
+  "version": true,
+  "size": 500,
+  "sort": [
+    {
+      "@timestamp": {
+        "order": "desc",
+        "unmapped_type": "boolean"
+      }
+    }
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_all": {}
+        },
+        {
+          "match_phrase": {
+            "pgId.keyword": {
+              "query": "410"
+            }
+          }
+        },
+        {
+          "match_phrase": {
+            "at": {
+              "query": 2
+            }
+          }
+        },
+        {
+          "match_phrase": {
+            "adSize.keyword": {
+              "query": "300x250"
+            }
+          }
+        },
+        {
+          "range": {
+            "@timestamp": {
+              "gte": 1512385723885,
+              "lte": 1512386623886,
+              "format": "epoch_millis"
+            }
+          }
+        }
+      ],
+      "must_not": []
+    }
+  },
+  "_source": {
+    "excludes": []
+  },
+  "aggs": {
+    "2": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "30s",
+        "time_zone": "UTC",
+        "min_doc_count": 1
+      }
+    }
+  },
+  "stored_fields": [
+    "*"
+  ],
+  "script_fields": {
+    "DSP Margin": {
+      "script": {
+        "inline": "(doc['gp'].value - doc['dspCP'].value)",
+        "lang": "painless"
+      }
+    },
+    "Gross Spend": {
+      "script": {
+        "inline": "doc['cpm'].value/1000.0",
+        "lang": "painless"
+      }
+    },
+    "SSP revenue": {
+      "script": {
+        "inline": "doc['ap'].value/1000.0",
+        "lang": "painless"
+      }
+    },
+    "DSP revenue": {
+      "script": {
+        "inline": "doc['dspCP'].value/1000.0",
+        "lang": "painless"
+      }
+    },
+    "C1X Margin": {
+      "script": {
+        "inline": "(doc['dspCP'].value - doc['ap'].value)/1000.0",
+        "lang": "painless"
+      }
+    }
+  },
+  "docvalue_fields": [
+    "@timestamp"
+  ],
+  "highlight": {
+    "pre_tags": [
+      "@kibana-highlighted-field@"
+    ],
+    "post_tags": [
+      "@/kibana-highlighted-field@"
+    ],
+    "fields": {
+      "*": {
+        "highlight_query": {
+          "bool": {
+            "must": [
+              {
+                "match_all": {}
+              },
+              {
+                "match_phrase": {
+                  "pgId.keyword": {
+                    "query": "410"
+                  }
+                }
+              },
+              {
+                "match_phrase": {
+                  "at": {
+                    "query": 2
+                  }
+                }
+              },
+              {
+                "match_phrase": {
+                  "adSize.keyword": {
+                    "query": "300x250"
+                  }
+                }
+              },
+              {
+                "range": {
+                  "@timestamp": {
+                    "gte": 1512385723885,
+                    "lte": 1512386623886,
+                    "format": "epoch_millis"
+                  }
+                }
+              }
+            ],
+            "must_not": []
+          }
+        }
+      }
+    },
+    "fragment_size": 2147483647
+  }
+}
